@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Comment Sentiment Analysis</title>
+</head>
+<body>
+  <h1>Analyze YouTube Video Comments</h1>
+  
+  <form id="videoForm">
+    <input type="text" id="videoInput" placeholder="Enter YouTube video URL" /><br>
+    <button type="submit">Analyze Comments</button>
+  </form>
+  
+  <h2>Results</h2>
+  <div id="results"></div>
+
+  <script>
+    // JavaScript to handle form submission and display the results
+    document.getElementById('videoForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      let videoUrl = document.getElementById('videoInput').value;
+
+      // Make a POST request to the backend API
+      fetch('/analyze_comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ video_url: videoUrl }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        let resultDiv = document.getElementById('results');
+        resultDiv.innerHTML = '';  // Clear previous results
+
+        // Display each comment and its sentiment
+        data.forEach(item => {
+          let p = document.createElement('p');
+          p.innerText = `Comment: ${item.comment}, Sentiment: ${item.sentiment}`;
+          resultDiv.appendChild(p);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
